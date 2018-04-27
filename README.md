@@ -1,5 +1,4 @@
-Raspberry Virtual Keyboard with touch screen
-
+## Kivy Chinese Virtual Keyboard
 
 ## Backup vkeyboard.py
 sudo mv /usr/local/lib/python2.7/dist-packages/kivy/uix/vkeyboard.py /usr/local/lib/python2.7/dist-packages/kivy/uix/vkeyboard-org.py
