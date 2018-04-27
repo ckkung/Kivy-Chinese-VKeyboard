@@ -37,7 +37,7 @@ Press ![](./png/chinese.png) to change Chinese keybaord
 
 Press ![](./png/english.png) to change English keyboard
 
-Press ![](./png/cj5.png) / ![](./png/simplex5.png) / ![](./png/simplex.png) to change another input method
+Press ![](./png/cj5.png) / ![](./png/simplex5.png) / ![](./png/simplex.png) to change next input method
 
 ![](./png/cj5.png) Changjei5 (倉頡五代) input method
 
