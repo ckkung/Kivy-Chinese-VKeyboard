@@ -19,7 +19,7 @@ nano ~/.kivy/config.ini
 	keyboard_mode = dock
 	keyboard_layout = chinese
 
-## Engish keyboard
+## English keyboard
 ![](./png/Chinese.png)
 
 ## Chinese keyboard
