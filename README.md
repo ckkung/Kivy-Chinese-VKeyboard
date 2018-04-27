@@ -6,9 +6,9 @@ sudo mv /usr/local/lib/python2.7/dist-packages/kivy/uix/vkeyboard.py /usr/local/
 ## Installation
 cd ~/
 
-git clone https://github.com/ckkung/Kivy-VKeyboard.git
+git clone https://github.com/ckkung/Kivy-Chinese-VKeyboard.git
 
-cd Kivy-VKeyboard
+cd Kivy-Chinese-VKeyboard
 
 sudo cp -r kivy /usr/local/lib/python2.7/dist-packages/
 
