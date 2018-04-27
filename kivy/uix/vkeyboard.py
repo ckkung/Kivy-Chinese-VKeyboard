@@ -1,5 +1,12 @@
 #coding=utf-8
 
+beepEnable = False
+
+if beepEnable:
+	import RPi.GPIO as GPIO
+	from threading import Thread
+	beepPin = 17
+
 '''
 VKeyboard
 =========
@@ -137,10 +144,13 @@ import os
 import binascii
 
 default_layout_path = join(kivy_data_dir, 'keyboards')
-# Quick 3
-default_chinese_table_0 = join(kivy_data_dir, 'table/simplex.cin')
-# Tsang-jei
-default_chinese_table_1 = join(kivy_data_dir, 'table/scj6.cin')
+# (簡易五代)","朱邦復發明的簡易倉頡輸入法第五代;Simple Cang Jie 5"
+simplex5_table = join(kivy_data_dir, 'table/simplex5')
+# (倉頡五代)","朱邦復發明的倉頡輸入法第五代;Cang Jie 5"
+cj5_table = join(kivy_data_dir, 'table/cj5')
+# (速成)","朱邦復發明的簡易倉頡輸入法;Simple Cang Jie"
+simplex_table = join(kivy_data_dir, 'table/simplex')
+
 default_chinese_font = join(kivy_data_dir, 'fonts/HannotateBold.ttf')
 
 class VKeyboard(Scatter):
@@ -356,6 +366,13 @@ class VKeyboard(Scatter):
 	__events__ = ('on_key_down', 'on_key_up', 'on_textinput')
 
 	def __init__(self, **kwargs):
+		if beepEnable:
+			# Set up GPIO:
+			GPIO.setmode(GPIO.BCM)
+			GPIO.setwarnings(False)
+			GPIO.setup(beepPin, GPIO.OUT)
+			GPIO.output(beepPin, GPIO.LOW)
+
 		# XXX move to style.kv
 		if 'size_hint' not in kwargs:
 			if 'size_hint_x' not in kwargs:
@@ -690,11 +707,13 @@ class VKeyboard(Scatter):
 			key_nb = 0
 			for pos, size in layout_geometry['LINE_%d' % line_nb]:
 				# retrieve the relative text
-				if line_nb == 5 and key_nb == 1:
+				if line_nb == 5 and key_nb == 10:
 					if self.chinese_input == 0:
 						text = u'簡易'
 					elif self.chinese_input == 1:
 						text = u'倉頡'
+					elif self.chinese_input == 2:
+						text = u'速成'
 				else:
 					text = layout[layout_mode + '_' + str(line_nb)][key_nb][0]
 				z = Label(text=text, font_size=self.font_size, pos=pos, size=size, font_name=self.font_name)
@@ -775,6 +794,9 @@ class VKeyboard(Scatter):
 		if not key:
 			return
 
+		if beepEnable:
+			Thread(target=self.beep()).start()
+
 		key_data = key[0]
 		displayed_char, internal, special_char, size = key_data
 		line_nb, key_index = key[1]
@@ -815,7 +837,7 @@ class VKeyboard(Scatter):
 				self.refresh(False)
 			elif special_char == 'input':
 				self.chinese_input = self.chinese_input + 1
-				if self.chinese_input > 1:
+				if self.chinese_input > 2:
 					self.chinese_input = 0
 				self.clear_chinese()
 				self.refresh()
@@ -834,7 +856,7 @@ class VKeyboard(Scatter):
 					else:
 						result = True
 				elif not special_char in ('chinese', 'input'):
-					if line_nb == 1:
+					if line_nb == 5:
 						if special_char > '0' and special_char < '7' and self.chinese_keys != '':
 							i = self.select_chinese_pos + (ord(special_char) - 0x31)
 							if len(self.select_chinese) > i:
@@ -843,26 +865,25 @@ class VKeyboard(Scatter):
 									result = True
 									internal = chinese
 									self.clear_chinese()
+						elif special_char == 'spacebar':
+							self.clear_chinese()
 						elif len(self.select_chinese) > 0:
-							if special_char == '7':
+							if special_char == 'N':
 								if len(self.select_chinese) > (self.select_chinese_pos + 6):
 									self.select_chinese_pos = self.select_chinese_pos + 6
-							elif special_char == '`':
+							elif special_char == 'P':
 								if self.select_chinese_pos > 5:
 									self.select_chinese_pos = self.select_chinese_pos - 6
-						if len(self.chinese_keys) > 0:
-							if special_char in ('8', '9', '0', '-', '='):
-								self.clear_chinese()
 					elif special_char.isalpha():   # check special_char within [a..z]
-						# Qucik
-						if self.chinese_input == 0:
+						# 簡易五代, 速成
+						if self.chinese_input == 0 or self.chinese_input == 2:
 							if len(self.chinese_keys)<2:
 								self.chinese_keys = self.chinese_keys + special_char
 								self.chinese_internal = self.chinese_internal + internal
 							else:
 								self.chinese_keys = special_char
 								self.chinese_internal = internal
-						# Tsang-jei
+						# 倉頡五代
 						elif self.chinese_input == 1:
 							if len(self.chinese_keys)<5:
 								self.chinese_keys = self.chinese_keys + special_char
@@ -889,41 +910,28 @@ class VKeyboard(Scatter):
 		self.refresh_active_keys_layer()
 
 	def find_chinese_internal(self, ch):
-		capital = False
-
 		self.refresh()
 		self.select_chinese = ''
 		self.select_chinese_pos = 0
+		if len(self.chinese_keys) == 0:
+			return
 		if self.chinese_input == 0:
-			fo = open(default_chinese_table_0, encoding='utf-8')
-			line = fo.readline()
-			while line != '' :
-				if line[0]=='#':
-					ch = ch.upper()
-					capital = True
-				index = line.find(ch + ' ')
-				if(index == 0):
-					line = line[:len(line)-1]
-					i = line.find(' ') + 1
-					s = line[i:]
-					if capital:
-						index = line.find('\\u')
-						if index != -1:
-							s = s.lower()
-							s = s.decode('unicode-escape')
-					self.select_chinese = self.select_chinese + s
-				line = fo.readline()
+			file_name = simplex5_table + ch[0].upper() + '.cin'
 		elif self.chinese_input == 1:
-			fo = open(default_chinese_table_1, encoding='utf-8')
+			file_name = cj5_table + ch[0].upper() + '.cin'
+		else:
+			file_name = simplex_table + ch[0].upper() + '.cin'
+
+		fo = open(file_name, encoding='utf-8')
+		line = fo.readline()
+		while line != '' :
+			i= line.find(ch + ' ')
+			if(i == 0):
+				line = line[:len(line)-1]
+				i = line.find(' ') + 1
+				s = line[i:]
+				self.select_chinese = self.select_chinese + s
 			line = fo.readline()
-			while line != '' :
-				index = line.find(ch + '\t')
-				if(index == 0):
-					line = line[:len(line)-1]
-					i = line.find('\t') + 1
-					s = line[i:]
-					self.select_chinese = self.select_chinese + s
-				line = fo.readline()
 		fo.close()
 
 	def draw_chinese_keys(self):
@@ -933,7 +941,7 @@ class VKeyboard(Scatter):
 		# then draw the text
 		key_nb = 0
 		chinese_pos = self.select_chinese_pos
-		for pos, size in layout_geometry['LINE_1']:
+		for pos, size in layout_geometry['LINE_5']:
 			# retrieve the relative text
 			text = ' '
 			if key_nb == 0:
@@ -949,9 +957,8 @@ class VKeyboard(Scatter):
 			elif key_nb > 0 and key_nb < 7 and len(self.select_chinese) > chinese_pos:
 				text = self.select_chinese[chinese_pos]
 				chinese_pos = chinese_pos + 1
-			elif key_nb > 7 and key_nb < 13:
-				if (len(self.chinese_internal) > (key_nb - 8)):
-					text = self.chinese_internal[key_nb - 8]
+			elif key_nb == 8:
+				text = self.chinese_internal
 			z = Label(text=text, font_size=self.font_size, pos=pos, size=size, font_name=self.font_name)
 			self.add_widget(z)
 			key_nb += 1
@@ -1034,6 +1041,14 @@ class VKeyboard(Scatter):
 				self.repeat_touch = None
 
 		return super(VKeyboard, self).on_touch_up(touch)
+
+	#--------------------------------------------------------
+	def beep(self):
+		if beepEnable:
+			GPIO.output(beepPin, GPIO.HIGH)
+			time.sleep(0.1)
+			# turn off the beeper:
+			GPIO.output(beepPin, GPIO.LOW)
 
 
 if __name__ == '__main__':
