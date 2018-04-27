@@ -19,7 +19,6 @@ nano ~/.kivy/config.ini
 	keyboard_layout = chinese
 
 ## English keyboard
-
 ![](./png/english_keyboard.png)
 
 ## Simplified (速成) Chinese keyboard
