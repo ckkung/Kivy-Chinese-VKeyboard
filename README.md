@@ -20,11 +20,8 @@ nano ~/.kivy/config.ini
 	keyboard_layout = chinese
 
 ## English keyboard
-<<<<<<< HEAD
+
 ![](./png/english_keyboard.png)
-=======
-![](./png/Chinese.png)
->>>>>>> cc01b219827bbefe34dda2a9dbb228148732e0f9
 
 ## Simplified (速成) Chinese keyboard
 ![](./png/simplex_keyboard.png)
@@ -49,8 +46,4 @@ Press ![](./png/cj5.png) / ![](./png/simplex5.png) / ![](./png/simplex.png) to c
 
 ![](./png/simplex.png) Simplified (速成) input method
 
-<<<<<<< HEAD
 ![](./png/key.png)
-=======
-![](./png/Chinese_select.png)
->>>>>>> cc01b219827bbefe34dda2a9dbb228148732e0f9
