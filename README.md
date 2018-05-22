@@ -12,12 +12,12 @@ git clone https://github.com/ckkung/Kivy-Chinese-VKeyboard.git
 
 cd Kivy-Chinese-VKeyboard/kivy/data/fonts
 wget http://glyph.iso10646hk.net/download/DFSongSd.ttf
-
-### 有關 DFSonfSd.ttf 版權
-http://glyph.iso10646hk.net/chinese/download_001.jsp
-
 cd ~/Kivy-Chinese-VKeyboard
 sudo cp -r kivy /usr/local/lib/python2.7/dist-packages/
+
+### 有關 DFSonfSd.ttf 版權
+
+http://glyph.iso10646hk.net/chinese/download_001.jsp
 
 ## Active chinese keyboard
 nano ~/.kivy/config.ini 
