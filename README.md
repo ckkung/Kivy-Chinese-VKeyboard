@@ -4,12 +4,19 @@
 sudo mv /usr/local/lib/python2.7/dist-packages/kivy/uix/vkeyboard.py /usr/local/lib/python2.7/dist-packages/kivy/uix/vkeyboard-org.py
 
 ## Installation
-cd ~/
 
+cd ~/
 git clone https://github.com/ckkung/Kivy-Chinese-VKeyboard.git
 
-cd Kivy-Chinese-VKeyboard
+# 安裝 香港參考宋體 DFSonfSd.ttf 字體，以便系統完全支持二萬九千餘漢字
 
+cd Kivy-Chinese-VKeyboard/kivy/data/fonts
+wget http://glyph.iso10646hk.net/download/DFSongSd.ttf
+
+# 有關 DFSonfSd.ttf 版權
+http://glyph.iso10646hk.net/chinese/download_001.jsp
+
+cd ~/Kivy-Chinese-VKeyboard
 sudo cp -r kivy /usr/local/lib/python2.7/dist-packages/
 
 ## Active chinese keyboard
@@ -20,9 +27,6 @@ nano ~/.kivy/config.ini
 
 ## English keyboard
 ![](./png/english_keyboard.png)
-
-## Simplified (速成) Chinese keyboard
-![](./png/simplex_keyboard.png)
 
 ## Simplified (簡易五代) Chinese keyboard
 ![](./png/simplex5_keyboard.png)
@@ -36,12 +40,10 @@ Press ![](./png/chinese.png) to change Chinese keybaord
 
 Press ![](./png/english.png) to change English keyboard
 
-Press ![](./png/cj5.png) / ![](./png/simplex5.png) / ![](./png/simplex.png) to change next input method
-
-![](./png/cj5.png) Changjei5 (倉頡五代) input method
+Press ![](./png/cj5.png) / ![](./png/simplex5.png) to change next input method
 
 ![](./png/simplex5.png) Simplified (簡易五代) input method
 
-![](./png/simplex.png) Simplified (速成) input method
+![](./png/cj5.png) Changjei5 (倉頡五代) input method
 
 ![](./png/key.png)
