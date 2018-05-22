@@ -6,13 +6,17 @@ sudo mv /usr/local/lib/python2.7/dist-packages/kivy/uix/vkeyboard.py /usr/local/
 ## Installation
 
 cd ~/
+
 git clone https://github.com/ckkung/Kivy-Chinese-VKeyboard.git
 
 ### 安裝 香港參考宋體 DFSonfSd.ttf 字體，以便系統完全支持二萬九千餘漢字
 
 cd Kivy-Chinese-VKeyboard/kivy/data/fonts
+
 wget http://glyph.iso10646hk.net/download/DFSongSd.ttf
+
 cd ~/Kivy-Chinese-VKeyboard
+
 sudo cp -r kivy /usr/local/lib/python2.7/dist-packages/
 
 ### 有關 DFSonfSd.ttf 版權
