@@ -11,7 +11,11 @@ git clone https://github.com/ckkung/Kivy-Chinese-VKeyboard.git
 
 ### 安裝 香港參考宋體 DFSonfSd.ttf 字體，以便系統完全支持二萬九千餘漢字
 
-cd Kivy-Chinese-VKeyboard/kivy/data/fonts
+cd Kivy-Chinese-VKeyboard/kivy/data/
+
+mkdir fonts
+
+cd fonts
 
 wget http://glyph.iso10646hk.net/download/DFSongSd.ttf
 
